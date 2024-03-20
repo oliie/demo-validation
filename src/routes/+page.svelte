@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '@picocss/pico/css/pico.pumpkin.min.css';
+	import { UserSchema } from '$lib/user.schema';
 
 	let payload = {};
 
@@ -10,32 +11,17 @@
 
 	let errorMessage = '';
 
-	function isGeneralStringValid(value: string) {
-		return value && value.length > 0;
-	}
-
-	function isEmailValid(value: string) {
-		const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-		return value && regex.test(value);
-	}
-
-	function isPasswordValid(value: string) {
-		return value && value.length >= 8;
-	}
-
-	function isPasswordValidationValid(value: string) {
-		return value && value === password;
-	}
-
 	function handleSubmit() {
-		const validForm =
-			isGeneralStringValid(name) &&
-			isEmailValid(email) &&
-			isPasswordValid(password) &&
-			isPasswordValidationValid(passwordValidation);
+		const validForm = UserSchema.safeParse({
+			name,
+			email,
+			password,
+			passwordValidation
+		});
 
-		if (!validForm) {
+		console.log(validForm);
+
+		if (!validForm.success) {
 			errorMessage = 'Formuläret är inte korrekt ifyllt! 😭';
 			throw new Error(errorMessage);
 		}
