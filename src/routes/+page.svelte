@@ -2,6 +2,10 @@
 	import '@picocss/pico/css/pico.pumpkin.min.css';
 </script>
 
+<header>
+	<h1>pixel<span class="and">&</span>code_ 🚀 Form-validering</h1>
+</header>
+
 <main class="container">
 	<form class="user-form" action="">
 		<input type="text" name="name" id="name" placeholder="Namn" aria-invalid="false" />
@@ -22,7 +26,13 @@
 </main>
 
 <style>
-	main {
-		margin-top: 5rem;
+	.and {
+		color: #ec7454;
+	}
+
+	h1 {
+		margin-top: 4rem;
+		margin-bottom: 2rem;
+		text-align: center;
 	}
 </style>
