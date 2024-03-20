@@ -56,7 +56,7 @@
 
 <main class="container">
 	<form class="user-form" on:submit|preventDefault={handleSubmit}>
-		<input type="text" bind:value={name} name="name" placeholder="Namn" aria-invalid="false" />
+		<input type="text" bind:value={name} name="name" placeholder="Namn" />
 
 		<input type="email" bind:value={email} name="email" placeholder="E-post" />
 
