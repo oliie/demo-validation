@@ -1,39 +1,26 @@
 <script lang="ts">
 	import '@picocss/pico/css/pico.pumpkin.min.css';
-	import { UserSchema } from '$lib/user.schema';
+	import SuperDebug, { superForm } from 'sveltekit-superforms';
 
-	let payload = {};
+	/**
+	 * Visa SuperDebug
+	 * Visa default-värden (schema)
+	 * Visa errors
+	 * Visa constraints (min/max) | lägg på det på namn
+	 * Visa optional
+	 * Visa custom error-meddelanden
+	 * Visa custom action name
+	 */
 
-	let name = '';
-	let email = '';
-	let password = '';
-	let passwordValidation = '';
+	export let data;
 
-	let errorMessage = '';
+	const { form, constraints, errors, enhance } = superForm(data.form, {
+		dataType: 'json',
+		resetForm: false,
+		clearOnSubmit: 'none'
+	});
 
-	function handleSubmit() {
-		const validForm = UserSchema.safeParse({
-			name,
-			email,
-			password,
-			passwordValidation
-		});
-
-		console.log(validForm);
-
-		if (!validForm.success) {
-			errorMessage = 'Formuläret är inte korrekt ifyllt! 😭';
-			throw new Error(errorMessage);
-		}
-
-		errorMessage = '';
-		payload = {
-			name,
-			email,
-			password,
-			passwordValidation
-		};
-	}
+	// $: console.log($constraints);
 </script>
 
 <header>
@@ -41,32 +28,52 @@
 </header>
 
 <main class="container">
-	<form class="user-form" on:submit|preventDefault={handleSubmit}>
-		<input type="text" bind:value={name} name="name" placeholder="Namn" />
+	<!-- <section>
+		<SuperDebug data={$form} />
+	</section> -->
 
-		<input type="email" bind:value={email} name="email" placeholder="E-post" />
+	<form class="user-form" method="POST" use:enhance>
+		<input type="text" placeholder="Namn" bind:value={$form.name} aria-invalid={!!$errors.name} />
 
-		<input type="text" bind:value={password} name="password" placeholder="Lösenord" />
+		<input
+			type="email"
+			placeholder="E-post"
+			bind:value={$form.email}
+			aria-invalid={!!$errors.email}
+		/>
+		{#if $errors.email}
+			<p class="error">{$errors.email}</p>
+		{/if}
 
 		<input
 			type="text"
-			bind:value={passwordValidation}
-			name="password-validation"
-			id="password-validation"
-			placeholder="Lösenord igen"
+			placeholder="Lösenord"
+			bind:value={$form.password}
+			aria-invalid={!!$errors.password}
 		/>
+		{#if $errors.password}
+			<p class="error">{$errors.password}</p>
+		{/if}
+
+		<input
+			type="text"
+			placeholder="Lösenord igen"
+			bind:value={$form.passwordValidation}
+			aria-invalid={!!$errors.passwordValidation}
+		/>
+		{#if $errors.passwordValidation}
+			<p class="error">{$errors.passwordValidation}</p>
+		{/if}
 
 		<button type="submit">Skapa användare</button>
 	</form>
-
-	{#if errorMessage}
-		<p>{errorMessage}</p>
-	{:else}
-		{JSON.stringify(payload)}
-	{/if}
 </main>
 
 <style>
+	.error {
+		color: hotpink;
+	}
+
 	.and {
 		color: #ec7454;
 	}
