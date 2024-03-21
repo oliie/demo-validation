@@ -1,6 +1,10 @@
 <script lang="ts">
 	import '@picocss/pico/css/pico.pumpkin.min.css';
 	import SuperDebug, { superForm } from 'sveltekit-superforms';
+	import ToggleConfetti from '$lib/ToggleConfetti.svelte';
+	import Huzzah from '$lib/Huzzah.svelte';
+
+	let success = false;
 
 	/**
 	 * Visa SuperDebug
@@ -17,7 +21,10 @@
 	const { form, constraints, errors, enhance } = superForm(data.form, {
 		dataType: 'json',
 		resetForm: false,
-		clearOnSubmit: 'none'
+		clearOnSubmit: 'none',
+		onResult: async (feedback) => {
+			success = feedback.result.data!.valid;
+		}
 	});
 
 	// $: console.log($constraints);
@@ -65,7 +72,10 @@
 			<p class="error">{$errors.passwordValidation}</p>
 		{/if}
 
-		<button type="submit">Skapa användare</button>
+		<ToggleConfetti>
+			<button slot="label" type="submit">Skapa användare</button>
+			<Huzzah {success} />
+		</ToggleConfetti>
 	</form>
 </main>
 
